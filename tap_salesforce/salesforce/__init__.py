@@ -161,6 +161,8 @@ def field_to_property_schema(field, mdata): # pylint:disable=too-many-branches
             "latitude": {"type": ["null", "number"]},
             "geocodeAccuracy": {"type": ["null", "string"]}
         }
+
+    # adding long to integer type based on type conversions in Postgres target
     elif sf_type in ["int", "long"]:
         property_schema['type'] = "integer"
     elif sf_type == "time":
@@ -197,6 +199,9 @@ class Salesforce():
                  token=None,
                  sf_client_id=None,
                  sf_client_secret=None,
+                 sf_username=None,
+                 sf_password=None,
+                 sf_grant_type=None,
                  quota_percent_per_run=None,
                  quota_percent_total=None,
                  is_sandbox=None,
@@ -208,6 +213,9 @@ class Salesforce():
         self.token = token
         self.sf_client_id = sf_client_id
         self.sf_client_secret = sf_client_secret
+        self.sf_username = sf_username
+        self.sf_password = sf_password
+        self.sf_grant_type = sf_grant_type
         self.session = requests.Session()
         self.access_token = None
         self.instance_url = None
@@ -225,7 +233,7 @@ class Salesforce():
         self.rest_requests_attempted = 0
         self.jobs_completed = 0
         self.login_timer = None
-        self.data_url = "{}/services/data/v41.0/{}"
+        self.data_url = "{}/services/data/v50.0/{}"
         self.pk_chunking = False
 
         # validate start_date
@@ -298,8 +306,15 @@ class Salesforce():
         else:
             login_url = 'https://login.salesforce.com/services/oauth2/token'
 
-        login_body = {'grant_type': 'refresh_token', 'client_id': self.sf_client_id,
-                      'client_secret': self.sf_client_secret, 'refresh_token': self.refresh_token}
+        if self.sf_grant_type == 'refresh_token':
+            login_body = {'grant_type': self.sf_grant_type, 'client_id': self.sf_client_id,
+                          'client_secret': self.sf_client_secret, 'refresh_token': self.refresh_token}
+        elif self.sf_grant_type == 'password':
+            login_body = {'grant_type': self.sf_grant_type, 'client_id': self.sf_client_id,
+                          'client_secret': self.sf_client_secret, 'username': self.sf_username,
+                          'password': self.sf_password}
+        else:
+            raise RuntimeError('Unsupported grant type.')
 
         LOGGER.info("Attempting login via OAuth2")
 
@@ -358,7 +373,7 @@ class Salesforce():
     def get_start_date(self, state, catalog_entry):
         catalog_metadata = metadata.to_map(catalog_entry['metadata'])
         replication_key = catalog_metadata.get((), {}).get('replication-key')
-
+        LOGGER.info(f'sf state: {state}')
         return (singer.get_bookmark(state,
                                     catalog_entry['tap_stream_id'],
                                     replication_key) or self.default_start_date)
