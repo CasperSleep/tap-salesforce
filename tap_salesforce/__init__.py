@@ -369,30 +369,28 @@ def main_impl():
     try:
         grant_type = CONFIG.get('grant_type', 'refresh_token')
         if grant_type == 'refresh_token':
-            sf = Salesforce(
-                    refresh_token=CONFIG['refresh_token'],
-                    sf_client_id=CONFIG['client_id'],
-                    sf_client_secret=CONFIG['client_secret'],
-                    sf_grant_type=grant_type,
-                    quota_percent_total=CONFIG.get('quota_percent_total'),
-                    quota_percent_per_run=CONFIG.get('quota_percent_per_run'),
-                    is_sandbox=CONFIG.get('is_sandbox'),
-                    select_fields_by_default=CONFIG.get('select_fields_by_default'),
-                    default_start_date=CONFIG.get('start_date'),
-                    api_type=CONFIG.get('api_type'))
+            sf = Salesforce(refresh_token=CONFIG['refresh_token'],
+                            sf_client_id=CONFIG['client_id'],
+                            sf_client_secret=CONFIG['client_secret'],
+                            sf_grant_type=grant_type,
+                            quota_percent_total=CONFIG.get('quota_percent_total'),
+                            quota_percent_per_run=CONFIG.get('quota_percent_per_run'),
+                            is_sandbox=CONFIG.get('is_sandbox'),
+                            select_fields_by_default=CONFIG.get('select_fields_by_default'),
+                            default_start_date=CONFIG.get('start_date'),
+                            api_type=CONFIG.get('api_type'))
         elif grant_type == 'password':
-            sf = Salesforce(
-                sf_client_id=CONFIG['client_id'],
-                sf_client_secret=CONFIG['client_secret'],
-                sf_username=CONFIG['username'],
-                sf_password=CONFIG['password'],
-                sf_grant_type=grant_type,
-                quota_percent_total=CONFIG.get('quota_percent_total'),
-                quota_percent_per_run=CONFIG.get('quota_percent_per_run'),
-                is_sandbox=CONFIG.get('is_sandbox'),
-                select_fields_by_default=CONFIG.get('select_fields_by_default'),
-                default_start_date=CONFIG.get('start_date'),
-                api_type=CONFIG.get('api_type'))
+            sf = Salesforce(sf_client_id=CONFIG['client_id'],
+                            sf_client_secret=CONFIG['client_secret'],
+                            sf_username=CONFIG['username'],
+                            sf_password=CONFIG['password'],
+                            sf_grant_type=grant_type,
+                            quota_percent_total=CONFIG.get('quota_percent_total'),
+                            quota_percent_per_run=CONFIG.get('quota_percent_per_run'),
+                            is_sandbox=CONFIG.get('is_sandbox'),
+                            select_fields_by_default=CONFIG.get('select_fields_by_default'),
+                            default_start_date=CONFIG.get('start_date'),
+                            api_type=CONFIG.get('api_type'))
         else:
             raise TapSalesforceException("Unsupported grant_type")
 
