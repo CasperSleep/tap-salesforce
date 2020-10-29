@@ -50,7 +50,6 @@ def get_replication_key(sobject_name, fields):
 def stream_is_selected(mdata):
     return mdata.get((), {}).get('selected', False)
 
-
 def build_state(raw_state, catalog):
     state = {}
 
