@@ -53,6 +53,7 @@ def stream_is_selected(mdata):
 
 def build_state(raw_state, catalog):
     state = {}
+
     for catalog_entry in catalog['streams']:
         tap_stream_id = catalog_entry['tap_stream_id']
         catalog_metadata = metadata.to_map(catalog_entry['metadata'])
@@ -84,6 +85,7 @@ def build_state(raw_state, catalog):
                     state, tap_stream_id, replication_key, replication_key_value)
         elif replication_method == 'FULL_TABLE' and version is None:
             state = singer.write_bookmark(state, tap_stream_id, 'version', version)
+
     return state
 
 # pylint: disable=undefined-variable
