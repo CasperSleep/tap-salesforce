@@ -143,8 +143,8 @@ def field_to_property_schema(field, mdata): # pylint:disable=too-many-branches
         property_schema['type'] = "string"
     elif sf_type in DATE_TYPES:
         date_type = {"type": "string", "format": "date-time"}
-        string_type = {"type": ["string", "null"]}
-        property_schema["anyOf"] = [date_type, string_type]
+        property_schema["format"] = "date-time"
+        property_schema["type"] = ["string", "null"]
     elif sf_type == "boolean":
         property_schema['type'] = "boolean"
     elif sf_type in NUMBER_TYPES:

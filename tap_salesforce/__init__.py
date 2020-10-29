@@ -50,10 +50,9 @@ def get_replication_key(sobject_name, fields):
 def stream_is_selected(mdata):
     return mdata.get((), {}).get('selected', False)
 
+
 def build_state(raw_state, catalog):
-    state = dict()
-    if raw_state:
-        state.update(raw_state['value'])
+    state = {}
     for catalog_entry in catalog['streams']:
         tap_stream_id = catalog_entry['tap_stream_id']
         catalog_metadata = metadata.to_map(catalog_entry['metadata'])
