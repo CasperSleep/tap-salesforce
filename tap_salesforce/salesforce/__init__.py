@@ -373,6 +373,7 @@ class Salesforce():
     def get_start_date(self, state, catalog_entry):
         catalog_metadata = metadata.to_map(catalog_entry['metadata'])
         replication_key = catalog_metadata.get((), {}).get('replication-key')
+
         return (singer.get_bookmark(state,
                                     catalog_entry['tap_stream_id'],
                                     replication_key) or self.default_start_date)
